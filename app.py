@@ -1,5 +1,4 @@
 import traceback
-import requests
 
 @app.route('/stock-analysis', methods=['POST'])
 def stock_analysis():
