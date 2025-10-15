@@ -1,12 +1,17 @@
-from flask import Flask, jsonify
-from stock_replinishment_Analysis import analyze_stock
+import traceback
+import requests
 
-app = Flask(__name__)
-
-@app.route('/stock-analysis')
+@app.route('/stock-analysis', methods=['POST'])
 def stock_analysis():
-    result = analyze_stock()
-    return jsonify(result)
+    try:
+        if 'file' not in request.files:
+            return jsonify({'error': 'No file uploaded'}), 400
 
-if __name__ == '__main__':
-    app.run(debug=True)
+        file = request.files['file']
+        df = pd.read_csv(file)
+        result = analyze_stock(df)
+        return jsonify({'result': result})
+
+    except Exception as e:
+        print("🔥 ERROR:", traceback.format_exc())
+        return jsonify({'error': str(e)}), 500
